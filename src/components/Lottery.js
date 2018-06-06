@@ -15,6 +15,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Divider from '@material-ui/core/Divider';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Random from 'random-js';
 
 class Lottery extends Component {
@@ -43,11 +45,25 @@ class Lottery extends Component {
     const { random } = this.state;
     this.setState(
       {
-        winner: athletsData[random.integer(0, athletsData.length - 1)],
-        currentChallenge: item.goals.sports[0].sportKey
+        currentChallenge: item.title
       },
-      () => this.handleClickOpen()
+      () => {
+        let athlets = athletsData.filter(athlet =>
+          athlet.challenges.includes(item.challengeUuid)
+        );
+        this.setState(
+          { winner: athlets[random.integer(0, athlets.length - 1)] },
+          () => this.handleClickOpen()
+        );
+      }
     );
+  };
+
+  getChallengeName = uuid => {
+    let result = this.props.challengesData.filter(
+      item => item.challengeUuid === uuid
+    );
+    return result[0] ? result[0].title : '';
   };
 
   componentDidMount() {
@@ -55,6 +71,7 @@ class Lottery extends Component {
     fetchAthletesData();
     fetchChallengesData();
   }
+
   render() {
     const { athletsData, challengesData } = this.props;
     const winnerProfile = this.state.winner ? this.state.winner.profile : null;
@@ -74,19 +91,22 @@ class Lottery extends Component {
                     {challengesData.map(item => {
                       let { sportKey, value } = item.goals.sports[0];
                       return (
-                        <ListItem key={item.challengeUuid}>
-                          <ListItemText
-                            primary={item.title}
-                            secondary={`${sportKey} ${value}`}
-                          />
-                          <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => this.onWinnerSelect(item)}
-                          >
-                            Choose the winner
-                          </Button>
-                        </ListItem>
+                        <div key={item.challengeUuid}>
+                          <ListItem>
+                            <ListItemText
+                              primary={item.title}
+                              secondary={`${sportKey} ${value}`}
+                            />
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => this.onWinnerSelect(item)}
+                            >
+                              Choose the winner
+                            </Button>
+                          </ListItem>
+                          <Divider />
+                        </div>
                       );
                     })}
                   </List>
@@ -107,20 +127,27 @@ class Lottery extends Component {
                 <div className="users-list">
                   <List>
                     {athletsData.map((item, index) => {
+                      const { firstName, lastName, email } = item.profile;
                       return (
-                        <ListItem key={index}>
-                          <Avatar>
-                            {item.profile.firstName.substring(0, 1)}
-                          </Avatar>
-                          <ListItemText
-                            primary={
-                              item.profile.firstName +
-                              ' ' +
-                              item.profile.lastName
-                            }
-                            secondary={item.profile.email}
-                          />
-                        </ListItem>
+                        <div key={index}>
+                          <ListItem>
+                            <Avatar>{firstName.substring(0, 1)}</Avatar>
+                            <ListItemText
+                              primary={`${firstName} ${lastName}`}
+                              secondary={email}
+                            />
+                            <ListItemSecondaryAction>
+                              {item.challenges.map(itemChellange => {
+                                return (
+                                  <div key={itemChellange}>
+                                    {this.getChallengeName(itemChellange)}
+                                  </div>
+                                );
+                              })}
+                            </ListItemSecondaryAction>
+                          </ListItem>
+                          <Divider />
+                        </div>
                       );
                     })}
                   </List>

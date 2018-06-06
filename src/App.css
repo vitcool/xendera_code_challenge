@@ -30,3 +30,7 @@
     transform: rotate(360deg);
   }
 }
+
+.MuiListItemSecondaryAction-root-132 {
+  text-align: right;
+}
