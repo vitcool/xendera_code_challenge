@@ -11,7 +11,7 @@ import { getChallengesData } from '../modules/challenges/selectors';
 const mapStateToProps = state => {
   return {
     athletsData: getAthletsData(state),
-    challenges: getChallengesData(state)
+    challengesData: getChallengesData(state)
   };
 };
 

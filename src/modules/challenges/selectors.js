@@ -1,4 +1,4 @@
-export const getChallengesData = state => state.athlets.challengesData || [];
+export const getChallengesData = state => state.challenges.challengesData || [];
 
 export const getChallengesDataError = state =>
   state.athlets.challengesDataError || [];

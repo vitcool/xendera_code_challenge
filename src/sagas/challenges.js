@@ -20,7 +20,7 @@ export function* fetchChallengesDataWorker() {
 
     // TODO: Add modal if failed
   } catch (error) {
-    window.console.log('fetchAthletesDataWorker error', error);
+    window.console.log('fetchChallengesDataWorker error', error);
   }
 }
 
